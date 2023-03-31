@@ -10,7 +10,7 @@ def index():
     with sqlite3.connect("./library.db") as con:
         cur = con.cursor()
 
-        cur.execute("SELECT * from library WHERE chapter='ch00';")
+        cur.execute("SELECT * from library WHERE chapter='ch01';")
         # data = cur.fetchall()
 
         cap, cont, ref = cur.fetchone()
@@ -52,6 +52,10 @@ def index():
         {scroll_script}
         </script>
 
+        <hr>
+
+        <footer> <p>{footer}</p> </footer>
+
         </body>
         </html>
         """.format(
@@ -72,7 +76,8 @@ def index():
             } else {
                 // Sorry! No Web Storage support..
                 console.log('No Web Storage Support! :(')
-            }"""
+            }""",
+            footer = ref.replace('\n', '</p><p>'),
             )
 
 
