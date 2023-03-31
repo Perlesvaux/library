@@ -1,78 +1,83 @@
 #!/usr/bin/env python3
-import sqlite3
-from sys import argv
-
-"""
-Over-engineered book manager! I'm planning on using it together with FLASK.
-
-
-Uodate from REPL!
-$python3
+from flask import Flask, render_template
 import sqlite3
 
->To delete table:
-    sqlite3.connect("./library.db").execute("DROP TABLE library")
+app = Flask(__name__)
 
->To update row:
-    sqlite3.connect("./library.db").execute("UPDATE library SET footer = ' ' WHERE id = ch00")
+@app.route('/')
+def index():
+    #connect to db
+    with sqlite3.connect("./library.db") as con:
+        cur = con.cursor()
 
->To retrieve:
-    for x in sqlite3.connect("./library.db").execute("select * from library where chapter='ch00'"): print(x
+        cur.execute("SELECT * from library WHERE chapter='ch00';")
+        # data = cur.fetchall()
 
-"""
+        cap, cont, ref = cur.fetchone()
 
-
-print(len(argv))
-
-with sqlite3.connect("./library.db") as con:
-    # con.execute("""CREATE TABLE IF NOT EXISTS library
-    #                 (chapter TEXT PRIMARY KEY, content TEXT, references TEXT)""")
-
-    try:
-        con.execute("""CREATE TABLE IF NOT EXISTS library
-                        (chapter TEXT PRIMARY KEY, content TEXT, footer TEXT)""")
-    finally:
-        if len(argv) == 4: 
-
-            CHAPTER = argv[1]
-            CONTENT = argv[2]
-            REFERENCES = argv[3]
+        # print(tup[0], tup[1], tup[2])
 
 
-            with open(CONTENT, 'r') as cont, open(REFERENCES, 'r') as refe:
-                content = cont.read()
-                references = refe.read()
+        print(ref)
 
-            # con.execute("INSERT INTO library (chapter, content, footer) VALUES (?, ?, ?)", (CHAPTER, content, references))
+
+
+
+        # data = cap
+
+
         
-        if len(argv) == 3: 
-            CHAPTER = argv[1]
-            CONTENT = argv[2]
-            references = ''
 
-            with open(CONTENT, 'r') as cont:
-                content = cont.read()
-            
-        con.execute("INSERT INTO library (chapter, content, footer) VALUES (?, ?, ?)", (CHAPTER, content, references))
+        
 
 
 
+        chapter = """
+        
+        
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>📚{name}</title>
+            {style}
+        </head>
+        <body>
+        <p>
+        {libro}
+        </p>
 
 
-with sqlite3.connect("./library.db") as con:
-    cursor = con.execute("SELECT chapter FROM library")
-    for row in cursor:
-        print(row)
+        <script defer>
+        {scroll_script}
+        </script>
+
+        </body>
+        </html>
+        """.format(
+            libro=cont.replace('\n', '</p><p>'),
+            name = cap,
+            style="<style>p{font-size: 1.5rem; font-family: 'Lucida Console', 'Courier New', monospace;} body{background-color: antiquewhite;}</style>",
+            scroll_script="""  if (typeof(Storage) !== "undefined") {
+                // Code for localStorage/sessionStorage.
+
+                //YOS stands for Y-offset. Defaults to 0 
+                //on first-time use. Then, it retrieves the stored
+                // y-offset to adjust srolling accordingly
+
+                if (localStorage.getItem("YOS") != null) window.scrollTo(0, localStorage.getItem("YOS") )
+                
+                window.addEventListener('scroll', ()=>{localStorage.setItem("YOS", window.pageYOffset);})
+
+            } else {
+                // Sorry! No Web Storage support..
+                console.log('No Web Storage Support! :(')
+            }"""
+            )
 
 
-# with sqlite3.connect("./library.db") as con:
-#     con.execute("""CREATE TABLE IF NOT EXISTS library
-#                     (chapter TEXT PRIMARY KEY, content TEXT)""")
+    return render_template('./index.html', data=chapter)
 
-#     # con.execute("INSERT INTO library (chapter, title, content) VALUES ('100', 'test 01', 'contents: none :v')")
-#     # con.execute("INSERT INTO library (chapter, title, content) VALUES ('100', 'test 01', 'contents: none :v')")
 
-#     # con.execute("INSERT INTO library (chapter, title, content) VALUES ('100', 'test 01', 'contents: none :v')")
-#     pass
-
-    
+if __name__ == "__main__":
+    app.run(debug=True)   
