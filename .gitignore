@@ -1,0 +1,8 @@
+bin/
+Books/
+include/
+lib/
+lib64
+pyvenv.cfg
+testContents
+testReferences
