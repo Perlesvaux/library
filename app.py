@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from flask import Flask, render_template
 import sqlite3
+from re import findall
 
 app = Flask(__name__)
 
@@ -10,7 +11,7 @@ def index():
     with sqlite3.connect("./library.db") as con:
         cur = con.cursor()
 
-        cur.execute("SELECT * from library WHERE chapter='ch01';")
+        cur.execute("SELECT * from library WHERE chapter='ch03';")
         # data = cur.fetchall()
 
         cap, cont, ref = cur.fetchone()
@@ -18,15 +19,30 @@ def index():
         # print(tup[0], tup[1], tup[2])
 
 
-        print(ref)
+        # print(ref)
 
-
+        #Copies for cont & ref... just in case
+        # NEW_TEXT = cont
+        # NEW_REF = ref
 
 
         # data = cap
 
+        #define regex to pick notes & footnotes
+        foo = "\[\d+\]"
+        num = "\d+"
 
+        #list all notes (must be equal in number to footnotes)
+        notas = findall(foo, ref)
+
+
+        for i, val in enumerate(notas):
+            # print(val, findall(num, val)[0])
+            number = findall(num, val)[0]
         
+
+            cont=cont.replace(val, f"<a id='note-{number}' href='#foot-{number}'> {val} </a>")
+            ref=ref.replace(val, f"<a id='foot-{number}' href='#note-{number}'> {val} </a>")
 
         
 
