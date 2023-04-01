@@ -49,20 +49,13 @@ def index():
 
 
         chapter = """
-        
-        
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>📚{name}</title>
+        <div>
             {style}
-        </head>
-        <body>
+        </div>
+        
         <p>
         {libro}
         </p>
-
 
         <script defer>
         {scroll_script}
@@ -71,9 +64,7 @@ def index():
         <hr>
 
         <footer> <p>{footer}</p> </footer>
-
-        </body>
-        </html>
+        
         """.format(
             libro=cont.replace('\n', '</p><p>'),
             name = cap,
