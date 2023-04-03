@@ -28,23 +28,34 @@ def index():
 
         # data = cap
 
-        #define regex to pick notes & footnotes
+        #define regex to pick notes & footnotes //maybe headers, even!
         foo = "\[\d+\]"
         num = "\d+"
+        h2 = "\*.*\*\n"
+        h1 = "\*\*.*\*\*\n"
 
         #list all notes (must be equal in number to footnotes)
         notas = findall(foo, ref)
 
-
+        #Create a link between each: note <--> footer
         for i, val in enumerate(notas):
-            # print(val, findall(num, val)[0])
             number = findall(num, val)[0]
-        
-
             cont=cont.replace(val, f"<a id='note-{number}' href='#foot-{number}'> {val} </a>")
             ref=ref.replace(val, f"<a id='foot-{number}' href='#note-{number}'> {val} </a>")
 
+        #Add Markup for header 2
+        title2 = findall(h2, cont)
+        for i, val in enumerate(title2):
+            cont=cont.replace(val, f"<h1> {val} </h1>")
+
+        #Add Markup for header 1
+        title1 = findall(h1, cont)
+        for i, val in enumerate(title1):
+            cont=cont.replace(val, f"<h1> {val} </h1>")
+
         
+
+
 
 
 
