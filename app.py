@@ -11,7 +11,7 @@ def index():
     with sqlite3.connect("./library.db") as con:
         cur = con.cursor()
 
-        cur.execute("SELECT * from library WHERE chapter='ch03';")
+        cur.execute("SELECT * from library WHERE chapter='bsrack';")
         # data = cur.fetchall()
 
         cap, cont, ref = cur.fetchone()
